@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BurgBoyz FF Bitcoin Fund</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="title-row">
+          <h1>BurgBoyz FF Bitcoin Fund</h1>
+          <button id="refreshBtn" class="btn ghost" title="Refresh now">↻ Refresh</button>
+        </div>
+        <p class="subtitle">Live pot balance, BTC price, and long-term growth projections.</p>
+      </header>
+
+      <section class="card">
+        <div class="card-header">
+          <h2>Fund Address</h2>
+        </div>
+        <div class="card-body address-grid">
+          <div class="address-inputs">
+            <input id="addressInput" type="text" placeholder="Enter Bitcoin address (bc1...)" autocomplete="off" spellcheck="false" />
+            <div class="actions">
+              <button id="saveAddressBtn" class="btn primary">Save Address</button>
+              <button id="clearAddressBtn" class="btn danger ghost">Clear</button>
+            </div>
+          </div>
+          <div class="address-meta">
+            <div class="meta-row">
+              <span class="meta-label">Current address</span>
+              <a id="addressDisplay" class="meta-value" href="#" target="_blank" rel="noopener">Not set</a>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Last updated</span>
+              <span id="lastUpdated" class="meta-value">—</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <div class="card-header">
+            <h2>Live Snapshot</h2>
+          </div>
+          <div class="card-body kpis">
+            <div class="kpi">
+              <div class="kpi-label">BTC Price (USD)</div>
+              <div id="btcPrice" class="kpi-value">—</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Fund Balance (BTC)</div>
+              <div id="btcBalance" class="kpi-value">—</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Fund Value (USD)</div>
+              <div id="usdValue" class="kpi-value accent">—</div>
+            </div>
+          </div>
+          <div class="card-footer small">Data auto-refreshes every 60s. Values approximate.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Growth Projection</h2>
+          </div>
+          <div class="card-body">
+            <div class="controls">
+              <label for="cagrInput" class="control-label">CAGR</label>
+              <div class="cagr-controls">
+                <input id="cagrRange" type="range" min="0" max="200" step="1" value="50" />
+                <div class="cagr-number">
+                  <input id="cagrInput" type="number" min="0" max="200" step="1" value="50" />
+                  <span>%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-wrap">
+              <canvas id="projectionChart" height="140"></canvas>
+            </div>
+
+            <div class="horiz"></div>
+
+            <div class="horiz-cards">
+              <div class="mini-card">
+                <div class="mini-label">5 years</div>
+                <div id="p5" class="mini-value">—</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-label">10 years</div>
+                <div id="p10" class="mini-value">—</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-label">15 years</div>
+                <div id="p15" class="mini-value">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer small">
+        <span>Built for the squad. This is not financial advice.</span>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./app.js" type="module"></script>
+  </body>
+  </html>
+
+
