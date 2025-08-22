@@ -310,6 +310,8 @@ async function init() {
           borderColor: '#3fb950',
           borderWidth: 2,
           pointRadius: 0,
+          pointHitRadius: 16,
+          pointHoverRadius: 3,
           tension: 0.1,
           fill: false,
           parsing: false,
@@ -319,11 +321,29 @@ async function init() {
         responsive: true,
         maintainAspectRatio: false,
         parsing: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => formatters.usd.format(ctx.parsed.y) } } },
-        scales: { x: { type: 'time', time: { unit: 'month' }, min: cutoff, max: now, grid: { display: false }, ticks: { color: '#9aa4b2' } }, y: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#9aa4b2', callback: (v) => formatters.usd.format(v) } } }
+        interaction: { mode: 'nearest', axis: 'x', intersect: false },
+        hover: { mode: 'nearest', intersect: false },
+        layout: { padding: { right: 12 } },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            intersect: false,
+            callbacks: { label: (ctx) => formatters.usd.format(ctx.parsed.y) }
+          }
+        },
+        scales: {
+          x: { type: 'time', time: { unit: 'month' }, min: cutoff, max: now, offset: true, grid: { display: false }, ticks: { color: '#9aa4b2' } },
+          y: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#9aa4b2', callback: (v) => formatters.usd.format(v) } }
+        }
       };
       window.__priceLine = new Chart(ctx, { type: 'line', data, options });
+      // Clear tooltip/details when tapping/clicking outside the chart
+      const canvasEl = dom.linePriceChart;
+      const clearActive = () => { try { window.__priceLine.setActiveElements([]); window.__priceLine.update('none'); } catch (_) {} };
+      const handleGlobalPointer = (e) => { if (!canvasEl.contains(e.target)) clearActive(); };
+      document.addEventListener('click', handleGlobalPointer);
+      document.addEventListener('touchstart', handleGlobalPointer, { passive: true });
+      canvasEl.addEventListener('mouseleave', clearActive);
     }
     // Not used now; BTC line in projection uses CAGR from slider
     btcYearly = [];
