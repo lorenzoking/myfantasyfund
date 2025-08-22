@@ -190,6 +190,12 @@ input[type="text"], input[type="number"] {
   .league .logo-link { grid-column: 1; justify-self: center; }
   .league .title-row h1 { grid-column: 1; white-space: normal; text-align: center; }
   .league .title-actions { grid-column: 1; justify-self: center; margin-top: 6px; }
+  /* Stack thanks header on mobile */
+  .thanks .logo-img { height: clamp(28px, 10vw, 40px); }
+  .thanks .title-row { display: grid; grid-template-columns: 1fr; grid-auto-rows: auto; justify-items: center; }
+  .thanks .logo-link { grid-column: 1; justify-self: center; }
+  .thanks .title-row h1 { grid-column: 1; white-space: normal; text-align: center; }
+  .thanks .title-actions { grid-column: 1; justify-self: center; margin-top: 6px; }
 }
 
 
