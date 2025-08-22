@@ -8,6 +8,7 @@ const dom = {
   refreshBtn: document.getElementById('refreshBtn'),
   btcPrice: document.getElementById('btcPrice'),
   btcBalance: document.getElementById('btcBalance'),
+  satsBalance: document.getElementById('satsBalance'),
   usdValue: document.getElementById('usdValue'),
   cagrRange: document.getElementById('cagrRange'),
   cagrInput: document.getElementById('cagrInput'),
@@ -15,6 +16,8 @@ const dom = {
   p10: document.getElementById('p10'),
   p15: document.getElementById('p15'),
   projectionChart: document.getElementById('projectionChart'),
+  linePriceChart: document.getElementById('linePriceChart'),
+  projectionTableBody: document.getElementById('projectionTableBody'),
 };
 
 const STORAGE_KEYS = {
@@ -60,6 +63,22 @@ async function fetchBtcPrice() {
     } catch (_) {}
   }
   throw new Error('All price sources failed');
+}
+
+async function fetchHistoricalDailyOHLC(days = 365) {
+  const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}&interval=daily`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch historical');
+  const data = await res.json();
+  const prices = (data?.prices || []).map(([ts, price]) => ({ time: Math.floor(ts / 1000), close: price }));
+  const ohlc = prices.map((p, i, arr) => {
+    const open = i > 0 ? arr[i - 1].close : p.close;
+    const close = p.close;
+    const high = Math.max(open, close);
+    const low = Math.min(open, close);
+    return { time: p.time, open, high, low, close };
+  });
+  return { ohlc, closes: prices };
 }
 
 async function fetchAddressBalanceBtc(address) {
@@ -121,29 +140,31 @@ function updateProjectionSummary({ usdNow, cagrPercent }) {
 }
 
 let chartInstance = null;
-function renderChart({ years, values }) {
+function renderChart({ years, fundValues }) {
   const ctx = dom.projectionChart.getContext('2d');
   const gradient = ctx.createLinearGradient(0, 0, 0, 160);
   gradient.addColorStop(0, 'rgba(255,138,0,0.35)');
   gradient.addColorStop(1, 'rgba(255,138,0,0)');
   const data = {
     labels: years.map((y) => `${y}y`),
-    datasets: [{
-      label: 'Projected Value (USD)',
-      data: values,
-      fill: true,
-      backgroundColor: gradient,
-      borderColor: '#ff8a00',
-      borderWidth: 2,
-      pointRadius: 0,
-      tension: 0.25,
-    }]
+    datasets: [
+      {
+        label: 'Fund Value (USD)',
+        data: fundValues,
+        fill: true,
+        backgroundColor: gradient,
+        borderColor: '#ff8a00',
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.25,
+      },
+    ].filter(Boolean)
   };
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { display: false },
+      legend: { display: true },
       tooltip: { callbacks: { label: (ctx) => formatters.usd.format(ctx.parsed.y) } }
     },
     scales: {
@@ -167,11 +188,23 @@ function syncCagrInputs(value) {
   saveCagr(clamped);
 }
 
-function computeAndRenderProjections(usdNow) {
+function computeAndRenderProjections(usdNow, priceNow) {
   const cagrPercent = Number(dom.cagrInput.value);
-  const proj = computeProjections({ usdNow, cagrPercent });
-  renderChart(proj);
+  const { years, values } = computeProjections({ usdNow, cagrPercent });
+  renderChart({ years, fundValues: values });
   updateProjectionSummary({ usdNow, cagrPercent });
+  updateProjectionTable({ priceNow, usdNow, cagrPercent, years });
+}
+
+function updateProjectionTable({ priceNow, usdNow, cagrPercent, years }) {
+  if (!dom.projectionTableBody) return;
+  const r = cagrPercent / 100;
+  const rows = years.map((y) => {
+    const btc = priceNow * Math.pow(1 + r, y);
+    const fund = usdNow * Math.pow(1 + r, y);
+    return `<tr><td>Year ${y}</td><td>${formatters.usd.format(btc)}</td><td>${formatters.usd.format(fund)}</td></tr>`;
+  }).join('');
+  dom.projectionTableBody.innerHTML = rows;
 }
 
 async function refreshAll() {
@@ -186,8 +219,20 @@ async function refreshAll() {
     const usdValue = price * balance;
     dom.btcPrice.textContent = formatters.usd.format(price);
     dom.btcBalance.textContent = formatters.btc.format(balance);
+    if (dom.satsBalance) dom.satsBalance.textContent = `${Math.round(balance * 1e8).toLocaleString()} sats`;
     dom.usdValue.textContent = formatters.usd.format(usdValue);
-    computeAndRenderProjections(usdValue);
+    window.__lastPrice = price;
+    window.__lastUsdValue = usdValue;
+    computeAndRenderProjections(usdValue, price);
+    // Update rolling 365-day price line with the latest price
+    if (window.__priceLine && window.__priceLine.data && window.__priceLine.data.datasets?.[0]) {
+      const now = new Date();
+      const cutoff = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+      const ds = window.__priceLine.data.datasets[0];
+      const updated = (ds.data || []).concat({ x: now, y: price }).filter(p => p.x >= cutoff);
+      ds.data = updated;
+      window.__priceLine.update('none');
+    }
     setLastUpdated();
   } catch (err) {
     console.error(err);
@@ -220,6 +265,45 @@ async function init() {
   const savedCagr = loadCagr();
   syncCagrInputs(savedCagr);
 
+  // Historical charts
+  let btcYearly = [];
+  try {
+    const { ohlc, closes } = await fetchHistoricalDailyOHLC(365);
+    // Live Snapshot line chart for last year (explicit 365-day window)
+    if (dom.linePriceChart) {
+      const ctx = dom.linePriceChart.getContext('2d');
+      const lastYear = closes.slice(-365);
+      const lineData = lastYear.map(p => ({ x: new Date(p.time * 1000), y: p.close }));
+      const now = new Date();
+      const cutoff = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+      const data = {
+        datasets: [{
+          label: 'BTC Price (USD)',
+          data: lineData,
+          borderColor: '#3fb950',
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.1,
+          fill: false,
+          parsing: false,
+        }]
+      };
+      const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        parsing: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => formatters.usd.format(ctx.parsed.y) } } },
+        scales: { x: { type: 'time', time: { unit: 'month' }, min: cutoff, max: now, grid: { display: false }, ticks: { color: '#9aa4b2' } }, y: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#9aa4b2', callback: (v) => formatters.usd.format(v) } } }
+      };
+      window.__priceLine = new Chart(ctx, { type: 'line', data, options });
+    }
+    // Not used now; BTC line in projection uses CAGR from slider
+    btcYearly = [];
+  } catch (e) {
+    console.warn('Failed to load historical data', e);
+  }
+
   // Events
   dom.saveAddressBtn.addEventListener('click', () => {
     const a = dom.addressInput.value.trim();
@@ -234,6 +318,7 @@ async function init() {
     updateAddressUi('');
     dom.usdValue.textContent = '—';
     dom.btcBalance.textContent = '—';
+    if (dom.satsBalance) dom.satsBalance.textContent = '— sats';
     dom.btcPrice.textContent = '—';
     setLastUpdated();
   });
@@ -243,21 +328,25 @@ async function init() {
     const v = Number(e.target.value);
     syncCagrInputs(v);
     // Recompute if we have a current USD
-    const usdText = dom.usdValue.textContent;
-    const usdNow = Number(usdText.replace(/[^0-9.-]/g, ''));
-    if (usdNow > 0) computeAndRenderProjections(usdNow);
+    const usdNow = window.__lastUsdValue;
+    const priceNow = window.__lastPrice;
+    if (usdNow > 0 && priceNow > 0) computeAndRenderProjections(usdNow, priceNow);
   });
   dom.cagrInput.addEventListener('input', (e) => {
     const v = Number(e.target.value);
     syncCagrInputs(v);
-    const usdText = dom.usdValue.textContent;
-    const usdNow = Number(usdText.replace(/[^0-9.-]/g, ''));
-    if (usdNow > 0) computeAndRenderProjections(usdNow);
+    const usdNow = window.__lastUsdValue;
+    const priceNow = window.__lastPrice;
+    if (usdNow > 0 && priceNow > 0) computeAndRenderProjections(usdNow, priceNow);
   });
 
   // Auto refresh every 60s
   setInterval(refreshAll, 60_000);
   await refreshAll();
+  // After first refresh, render projections using current price and fund value
+  const priceNow = window.__lastPrice;
+  const usdNow = window.__lastUsdValue;
+  if (usdNow > 0 && priceNow > 0) computeAndRenderProjections(usdNow, priceNow);
 }
 
 document.addEventListener('DOMContentLoaded', () => { init().catch(console.error); });

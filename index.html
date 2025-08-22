@@ -57,11 +57,19 @@
             <div class="kpi">
               <div class="kpi-label">Fund Balance (BTC)</div>
               <div id="btcBalance" class="kpi-value">—</div>
+              <div class="kpi-sub" id="satsBalance">— sats</div>
             </div>
             <div class="kpi">
               <div class="kpi-label">Fund Value (USD)</div>
               <div id="usdValue" class="kpi-value accent">—</div>
             </div>
+          </div>
+          <div class="card-body">
+            <p class="help-text small" style="margin-top:0">Fund Value is simply your BTC amount multiplied by the current Bitcoin price.
+            This view updates about every minute.</p>
+            <div class="horiz"></div>
+            <h3 class="small" style="margin: 0 0 8px; color: var(--muted);">BTC Price (Last 12 Months)</h3>
+            <div class="chart-wrap"><canvas id="linePriceChart"></canvas></div>
           </div>
           <div class="card-footer small">Data auto-refreshes every 60s. Values approximate.</div>
         </div>
@@ -72,7 +80,7 @@
           </div>
           <div class="card-body">
             <div class="controls">
-              <label for="cagrInput" class="control-label">CAGR</label>
+              <label for="cagrInput" class="control-label">Average yearly growth (CAGR)</label>
               <div class="cagr-controls">
                 <input id="cagrRange" type="range" min="0" max="200" step="1" value="50" />
                 <div class="cagr-number">
@@ -80,25 +88,34 @@
                   <span>%</span>
                 </div>
               </div>
+              <p class="help-text small">This sets the average percentage your fund grows each year. Try changing it to see how the fund could grow over time.</p>
             </div>
 
             <div class="chart-wrap">
               <canvas id="projectionChart" height="140"></canvas>
             </div>
-
             <div class="horiz"></div>
-
+            <div class="table-wrap">
+              <table class="proj-table">
+                <thead>
+                  <tr><th>Year</th><th>BTC Price</th><th>Fund Value</th></tr>
+                </thead>
+                <tbody id="projectionTableBody"></tbody>
+              </table>
+            </div>
+            <p class="help-text small">These are simple estimates using the growth setting above. They aren’t predictions—just a way to visualize what could happen if Bitcoin grows by that average rate each year.</p>
+            <div class="horiz"></div>
             <div class="horiz-cards">
               <div class="mini-card">
-                <div class="mini-label">5 years</div>
+                <div class="mini-label">Fund Value in 5 years</div>
                 <div id="p5" class="mini-value">—</div>
               </div>
               <div class="mini-card">
-                <div class="mini-label">10 years</div>
+                <div class="mini-label">Fund Value in 10 years</div>
                 <div id="p10" class="mini-value">—</div>
               </div>
               <div class="mini-card">
-                <div class="mini-label">15 years</div>
+                <div class="mini-label">Fund Value in 15 years</div>
                 <div id="p15" class="mini-value">—</div>
               </div>
             </div>
@@ -112,6 +129,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <script src="./app.js" type="module"></script>
   </body>
   </html>
