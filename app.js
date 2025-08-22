@@ -18,6 +18,7 @@ const dom = {
   projectionChart: document.getElementById('projectionChart'),
   linePriceChart: document.getElementById('linePriceChart'),
   projectionTableBody: document.getElementById('projectionTableBody'),
+  titleLeagueName: document.getElementById('titleLeagueName'),
 };
 
 const STORAGE_KEYS = {
@@ -29,6 +30,10 @@ const formatters = {
   usd: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }),
   btc: new Intl.NumberFormat('en-US', { minimumFractionDigits: 8, maximumFractionDigits: 8 }),
 };
+
+// League routing state
+let __leagueMode = false;
+let __configAddress = '';
 
 function getBlockExplorerUrl(address) {
   return `https://mempool.space/address/${address}`;
@@ -199,16 +204,18 @@ function computeAndRenderProjections(usdNow, priceNow) {
 function updateProjectionTable({ priceNow, usdNow, cagrPercent, years }) {
   if (!dom.projectionTableBody) return;
   const r = cagrPercent / 100;
+  const baseYear = new Date().getFullYear();
   const rows = years.map((y) => {
     const btc = priceNow * Math.pow(1 + r, y);
     const fund = usdNow * Math.pow(1 + r, y);
-    return `<tr><td>Year ${y}</td><td>${formatters.usd.format(btc)}</td><td>${formatters.usd.format(fund)}</td></tr>`;
+    const yearLabel = baseYear + y;
+    return `<tr><td>${yearLabel}</td><td>${formatters.usd.format(btc)}</td><td>${formatters.usd.format(fund)}</td></tr>`;
   }).join('');
   dom.projectionTableBody.innerHTML = rows;
 }
 
 async function refreshAll() {
-  const address = loadAddress();
+  const address = (__leagueMode && __configAddress) ? __configAddress : loadAddress();
   updateAddressUi(address);
   if (!address) return;
   try {
@@ -239,12 +246,23 @@ async function refreshAll() {
   }
 }
 
+function getSlugFromPath() {
+  const path = location.pathname.replace(/\/+/g, '/').replace(/\/$/, '');
+  // Expecting /leagues/slug or root
+  const parts = path.split('/').filter(Boolean);
+  if (parts[0] === 'leagues' && parts[1]) return parts[1];
+  return '';
+}
+
 async function loadConfigAddress() {
   try {
-    const res = await fetch('./config.json', { cache: 'no-store' });
+    const slug = getSlugFromPath();
+    const url = slug ? `/leagues/${slug}/config.json` : '/config.json';
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) return '';
     const cfg = await res.json();
     const addr = typeof cfg?.btcAddress === 'string' ? cfg.btcAddress.trim() : '';
+    if (cfg?.leagueName && dom.titleLeagueName) dom.titleLeagueName.textContent = cfg.leagueName;
     return addr;
   } catch (_) {
     return '';
@@ -253,9 +271,18 @@ async function loadConfigAddress() {
 
 async function init() {
   // Init address and cagr
+  const slug = getSlugFromPath();
+  __leagueMode = Boolean(slug);
   const configAddress = await loadConfigAddress();
-  let addressToUse = configAddress || loadAddress();
-  if (configAddress) {
+  __configAddress = configAddress || '';
+  let addressToUse = __leagueMode ? __configAddress : (configAddress || loadAddress());
+  if (__leagueMode) {
+    if (dom.addressInputs) dom.addressInputs.style.display = 'none';
+    if (dom.saveAddressBtn) dom.saveAddressBtn.disabled = true;
+    if (dom.clearAddressBtn) dom.clearAddressBtn.disabled = true;
+    if (dom.addressInput) { dom.addressInput.readOnly = true; dom.addressInput.disabled = true; }
+  } else if (configAddress) {
+    // Persist demo root config address to local storage for convenience
     saveAddress(configAddress);
     if (dom.addressInputs) dom.addressInputs.style.display = 'none';
   }
@@ -306,6 +333,7 @@ async function init() {
 
   // Events
   dom.saveAddressBtn.addEventListener('click', () => {
+    if (__leagueMode) return;
     const a = dom.addressInput.value.trim();
     if (!a) return;
     saveAddress(a);
@@ -313,6 +341,7 @@ async function init() {
     refreshAll();
   });
   dom.clearAddressBtn.addEventListener('click', () => {
+    if (__leagueMode) return;
     saveAddress('');
     dom.addressInput.value = '';
     updateAddressUi('');

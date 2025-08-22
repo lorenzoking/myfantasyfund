@@ -33,8 +33,12 @@ body {
   justify-content: space-between;
   gap: 12px;
 }
+.title-actions { display: flex; gap: 8px; align-items: center; }
 .header h1 { margin: 0; font-size: 22px; letter-spacing: 0.2px; }
 .subtitle { margin: 6px 0 0; color: var(--muted); }
+.brand { font-size: 28px; letter-spacing: 0.4px; }
+.brand-accent { color: var(--accent); }
+.hero { margin-top: 6px; background: linear-gradient(180deg, rgba(255,138,0,0.08), rgba(255,138,0,0) 70%); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); }
 
 .grid {
   display: grid;
@@ -72,6 +76,10 @@ body {
 }
 .btn:hover { border-color: #2a3240; }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: #000; }
+.search-wrap { margin-bottom: 6px; }
+.search-input { padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: #0f1216; color: var(--text); width: 100%; }
+.cta-card .card-body { display: grid; gap: 8px; align-items: start; }
+.cta-card .btn { justify-self: start; }
 .btn.primary:hover { filter: brightness(0.95); }
 .btn.ghost { background: rgba(255,255,255,0.03); }
 .btn.danger { border-color: #3b1f1f; color: #ff9a9a; }
