@@ -247,6 +247,10 @@ async function refreshAll() {
 }
 
 function getSlugFromPath() {
+  // Support dev preview via ?slug= param
+  const url = new URL(location.href);
+  const previewSlug = url.searchParams.get('slug');
+  if (previewSlug) return previewSlug;
   const path = location.pathname.replace(/\/+/g, '/').replace(/\/$/, '');
   // Expecting /leagues/slug or root
   const parts = path.split('/').filter(Boolean);
@@ -257,12 +261,28 @@ function getSlugFromPath() {
 async function loadConfigAddress() {
   try {
     const slug = getSlugFromPath();
+    // Dev preview: read from localStorage if present
+    if (slug) {
+      const local = localStorage.getItem(`mff_league:${slug}`);
+      if (local) {
+        const cfg = JSON.parse(local);
+        if (cfg?.leagueName && dom.titleLeagueName) {
+          dom.titleLeagueName.textContent = cfg.leagueName;
+          try { document.title = `${cfg.leagueName} Bitcoin Fund`; } catch {}
+        }
+        const addr = typeof cfg?.btcAddress === 'string' ? cfg.btcAddress.trim() : '';
+        if (addr) return addr;
+      }
+    }
     const url = slug ? `/leagues/${slug}/config.json` : '/config.json';
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) return '';
     const cfg = await res.json();
     const addr = typeof cfg?.btcAddress === 'string' ? cfg.btcAddress.trim() : '';
-    if (cfg?.leagueName && dom.titleLeagueName) dom.titleLeagueName.textContent = cfg.leagueName;
+    if (cfg?.leagueName && dom.titleLeagueName) {
+      dom.titleLeagueName.textContent = cfg.leagueName;
+      try { document.title = `${cfg.leagueName} Bitcoin Fund`; } catch {}
+    }
     return addr;
   } catch (_) {
     return '';
@@ -273,6 +293,19 @@ async function init() {
   // Init address and cagr
   const slug = getSlugFromPath();
   __leagueMode = Boolean(slug);
+  // Set preview title immediately if available (before any async work)
+  if (__leagueMode) {
+    try {
+      const local = localStorage.getItem(`mff_league:${slug}`);
+      if (local) {
+        const cfg = JSON.parse(local);
+        if (cfg?.leagueName && dom.titleLeagueName) {
+          dom.titleLeagueName.textContent = cfg.leagueName;
+          try { document.title = `${cfg.leagueName} Bitcoin Fund`; } catch {}
+        }
+      }
+    } catch {}
+  }
   const configAddress = await loadConfigAddress();
   __configAddress = configAddress || '';
   let addressToUse = __leagueMode ? __configAddress : (configAddress || loadAddress());

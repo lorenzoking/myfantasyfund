@@ -59,8 +59,11 @@
       <section class="card cta-card">
         <div class="card-body">
           <h3 style="margin:0 0 6px">Request a league page</h3>
-          <p class="help-text">Send us your league name and Bitcoin address and we’ll set it up. Simple $5 self-serve coming soon.</p>
-          <a class="btn primary" href="https://github.com/lorenzoking/myfantasyfund/issues/new?title=League+page+request&body=League+name%3A%0ASlug%3A%0ABTC+address%3A" target="_blank" rel="noopener">Request a page</a>
+          <p class="help-text">Send your league name and Bitcoin address — we’ll set it up. Pay‑what‑it’s‑worth optional.</p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap">
+            <a class="btn" href="/contact.html">Request a page</a>
+            <a id="pwywBtn" class="btn primary" href="#" target="_blank" rel="noopener" style="display:none">Pay what it’s worth</a>
+          </div>
         </div>
       </section>
 
@@ -70,6 +73,14 @@
     </div>
 
     <script src="/home.js" type="module"></script>
+    <script type="module">
+      fetch('/config.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(cfg => {
+        if (cfg?.pwywLink) {
+          const btn = document.getElementById('pwywBtn');
+          if (btn) { btn.href = cfg.pwywLink; btn.style.display = ''; }
+        }
+      }).catch(() => {});
+    </script>
   </body>
   </html>
 

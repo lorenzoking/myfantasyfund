@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/" />
+    <title>Thanks — myfantasyfund</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="icon" href="/logo/logotransparentcropped.png" />
+  </head>
+  <body class="thanks">
+    <div class="container">
+      <header class="header">
+        <div class="title-row">
+          <a href="/" class="logo-link" aria-label="myfantasyfund home" rel="home">
+            <img src="/logo/logotransparentcropped.png" alt="myfantasyfund" class="logo-img" />
+          </a>
+          <h1 style="margin:0">Thanks for your request</h1>
+          <div class="title-actions">
+            <a href="/" class="btn ghost">← Home</a>
+          </div>
+        </div>
+        <p class="subtitle">We received your request. If you’d like, you can pay what it’s worth below.</p>
+      </header>
+
+      <section class="grid">
+        <div class="card card-light">
+          <div class="card-header"><h2>Pay What It’s Worth</h2></div>
+          <div class="card-body">
+            <p class="help-text">Tips help us prioritize your league setup and improve the site.</p>
+            <div class="controls" style="margin-top:12px">
+              <label class="control-label">Lightning (Speed App)</label>
+              <div style="display:flex; gap:8px; align-items:center">
+                <input id="lnSpeed" type="text" readonly value="crownedk9s@speed.app" />
+                <button id="copyLnSpeed" class="btn">Copy</button>
+              </div>
+              <label class="control-label" style="margin-top:8px">Lightning (Strike)</label>
+              <div style="display:flex; gap:8px; align-items:center">
+                <input id="lnStrike" type="text" readonly value="crownedk9s@strike.me" />
+                <button id="copyLnStrike" class="btn">Copy</button>
+              </div>
+              <label class="control-label" style="margin-top:8px">On-chain Bitcoin (fallback)</label>
+              <div style="display:flex; gap:8px; align-items:center">
+                <input id="btcAddr" type="text" readonly value="bc1q2p005c48y7mlurdqfz4vejxr7pwsazjgry2amk" />
+                <button id="copyBtc" class="btn">Copy</button>
+              </div>
+              <a id="pwywLink" class="btn primary" href="#" target="_blank" rel="noopener" style="display:none; margin-top:8px">Open Payment Page</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-light">
+          <div class="card-header"><h2>What happens next</h2></div>
+          <div class="card-body">
+            <ul>
+              <li>We’ll validate the BTC address and slug.</li>
+              <li>We create your league page and send you the link.</li>
+              <li>If anything’s off, we’ll email you.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer small"><span>Built for the squad. This is not financial advice.</span></footer>
+    </div>
+    <script src="/thanks.js" type="module"></script>
+  </body>
+  </html>
+
+

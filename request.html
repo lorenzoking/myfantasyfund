@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/" />
+    <title>Request a League Page — myfantasyfund</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="icon" href="/logo/logotransparentcropped.png" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="title-row">
+          <a href="/" class="logo-link" aria-label="myfantasyfund home" rel="home">
+            <img src="/logo/logotransparentcropped.png" alt="myfantasyfund" class="logo-img" />
+          </a>
+          <h1 style="margin:0">Request a League Page</h1>
+          <div class="title-actions">
+            <a href="/" class="btn ghost">← Home</a>
+          </div>
+        </div>
+        <p class="subtitle">Fill this out and we’ll spin up a page like BurgBoyz with your details.</p>
+      </header>
+
+      <section class="card">
+        <div class="card-body">
+          <form id="requestForm" class="controls" autocomplete="on">
+            <label class="control-label" for="leagueName">League name</label>
+            <input id="leagueName" type="text" placeholder="Ex: BurgBoyz Fantasy Football" required />
+
+            <label class="control-label" for="slug">League slug (URL)</label>
+            <input id="slug" type="text" placeholder="Ex: burgboyz" required />
+            <p class="help-text small">Lowercase letters, numbers, and dashes only. This becomes /leagues/&lt;slug&gt;/</p>
+
+            <label class="control-label" for="btcAddress">Bitcoin address (bc1…)</label>
+            <input id="btcAddress" type="text" placeholder="bc1…" spellcheck="false" required />
+
+            <label class="control-label" for="contact">Contact email (optional)</label>
+            <input id="contact" type="email" placeholder="you@example.com" />
+
+            <label class="control-label" for="notes">Notes (optional)</label>
+            <input id="notes" type="text" placeholder="Anything else we should know?" />
+
+            <div class="horiz"></div>
+
+            <div class="grid-12">
+              <div class="col-7">
+                <button id="submitBtn" class="btn primary" type="submit">Submit request</button>
+              </div>
+              <div class="col-5" style="display:grid; gap:8px; align-content:start">
+                <div id="payWrap" style="display:none">
+                  <label class="control-label">Pay what it’s worth (optional)</label>
+                  <a id="payLink" class="btn" href="#" target="_blank" rel="noopener">Pay now</a>
+                  <p class="help-text small">Paying helps us prioritize. You can still submit without paying.</p>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <footer class="footer small">
+        <span>Built for the squad. This is not financial advice.</span>
+      </footer>
+    </div>
+
+    <script src="/request.js" type="module"></script>
+  </body>
+  </html>
+
+

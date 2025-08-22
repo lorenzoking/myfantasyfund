@@ -28,6 +28,21 @@ test.describe('Symmetry', () => {
     // Title centered horizontally within container
     await assertCentered(page, 'header.header h1');
   });
+
+  test('Contact page readable layout', async ({ page }) => {
+    await page.goto('/contact.html');
+    await expect(page.locator('.card-light')).toBeVisible();
+    await expect(page.locator('.card-light')).toHaveScreenshot('contact-card.png', { animations: 'disabled' });
+  });
+
+  test('Thanks page symmetrical layout', async ({ page }) => {
+    await page.goto('/thanks.html');
+    // Header should be centered
+    await assertCentered(page, 'header.header h1');
+    // Two light cards should be visible in the grid
+    await expect(page.locator('.grid .card-light')).toHaveCount(2);
+    await expect(page.locator('header.header')).toHaveScreenshot('thanks-header.png', { animations: 'disabled' });
+  });
 });
 
 
