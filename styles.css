@@ -147,6 +147,9 @@ input[type="text"], input[type="number"] {
   .address-grid { grid-template-columns: 1fr; }
   .kpis { grid-template-columns: 1fr; }
   .horiz-cards { grid-template-columns: 1fr; }
+  /* Ensure long values like BTC addresses and timestamps don't get cut off */
+  .meta-row { flex-direction: column; align-items: flex-start; }
+  .meta-value { max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }
 }
 
 
