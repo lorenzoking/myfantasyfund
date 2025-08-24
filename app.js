@@ -19,6 +19,8 @@ const dom = {
   linePriceChart: document.getElementById('linePriceChart'),
   projectionTableBody: document.getElementById('projectionTableBody'),
   titleLeagueName: document.getElementById('titleLeagueName'),
+  rankingsTable: document.getElementById('rankingsTable'),
+  payoutsTable: document.getElementById('payoutsTable'),
 };
 
 const STORAGE_KEYS = {
@@ -214,12 +216,48 @@ function updateProjectionTable({ priceNow, usdNow, cagrPercent, years }) {
   dom.projectionTableBody.innerHTML = rows;
 }
 
+async function fetchRankingsAndPayouts(slug) {
+  try {
+    if (!slug) return { rankings: [], payouts: [] };
+    const res = await fetch(`/leagues/${slug}/rankings.json`, { cache: 'no-store' });
+    if (!res.ok) return { rankings: [], payouts: [] };
+    const j = await res.json();
+    const rankings = Array.isArray(j?.rankings) ? j.rankings : [];
+    const payouts = Array.isArray(j?.payouts) ? j.payouts : [];
+    return { rankings, payouts };
+  } catch (_) { return { rankings: [], payouts: [] }; }
+}
+
+function renderRankings(rankings) {
+  if (!dom.rankingsTable) return;
+  const rows = rankings.map((r, i) => {
+    const place = (r?.rank ?? i + 1);
+    const team = r?.team || r?.name || `Team ${i + 1}`;
+    const record = r?.record || '';
+    return `<tr><td style="text-align:left">#${place}</td><td style="text-align:left">${team}</td><td>${record}</td></tr>`;
+  }).join('');
+  dom.rankingsTable.innerHTML = rows || '<tr><td colspan="3" style="text-align:center; color: var(--muted)">No rankings yet.</td></tr>';
+}
+
+function renderPayouts(payoutPercents, fundUsd) {
+  if (!dom.payoutsTable) return;
+  const rows = payoutPercents.map((p) => {
+    const place = p?.place || p?.rank || '';
+    const percent = Number(p?.percent) || 0;
+    const usd = fundUsd * (percent / 100);
+    return `<tr><td style=\"text-align:left\">${place}</td><td>${percent}%</td><td>${formatters.usd.format(usd)}</td></tr>`;
+  }).join('');
+  dom.payoutsTable.innerHTML = rows || '<tr><td colspan="3" style="text-align:center; color: var(--muted)">No payouts configured.</td></tr>';
+}
+
 async function refreshAll() {
   const address = (__leagueMode && __configAddress) ? __configAddress : loadAddress();
   updateAddressUi(address);
   if (!address) return;
   try {
-    const [price, balance] = await Promise.all([
+    const slug = getSlugFromPath();
+    const [{ rankings, payouts }, price, balance] = await Promise.all([
+      fetchRankingsAndPayouts(slug),
       fetchBtcPrice(),
       fetchAddressBalanceBtc(address)
     ]);
@@ -231,6 +269,9 @@ async function refreshAll() {
     window.__lastPrice = price;
     window.__lastUsdValue = usdValue;
     computeAndRenderProjections(usdValue, price);
+    // Render rankings and payouts after value known
+    renderRankings(rankings);
+    renderPayouts(payouts, usdValue);
     // Update rolling 365-day price line with the latest price
     if (window.__priceLine && window.__priceLine.data && window.__priceLine.data.datasets?.[0]) {
       const now = new Date();

@@ -44,10 +44,11 @@ body {
 .thanks .logo-link { justify-self: start; }
 .thanks .title-actions { justify-self: end; }
 /* Slightly smaller logo on league pages to avoid crowding */
-.league .logo-img { height: clamp(36px, 4vw, 56px); }
+.league .logo-img { height: clamp(84px, 8vw, 160px); }
 .title-row > * { min-width: 0; }
 .logo-link { display: inline-flex; align-items: center; }
-.logo-img { height: clamp(60px, 6vw, 120px); width: auto; border-radius: 0; display: block; }
+.logo-img { height: clamp(96px, 10vw, 180px); width: auto; border-radius: 0; display: block; }
+.home .logo-img { height: clamp(140px, 18vw, 260px); }
 .title-actions { display: flex; gap: 8px; align-items: center; }
 .header h1 { margin: 0; font-size: 22px; letter-spacing: 0.2px; }
 .subtitle { margin: 6px 0 0; color: var(--muted); }
@@ -185,7 +186,7 @@ input[type="text"], input[type="number"] {
   .header h1 { flex: 1 0 100%; white-space: normal; line-height: 1.2; }
   .title-actions { margin-left: auto; }
   /* On mobile allow league titles to wrap and ensure smaller logo */
-  .league .logo-img { height: clamp(28px, 10vw, 40px); }
+  .league .logo-img { height: clamp(96px, 22vw, 140px); }
   .league .title-row { display: grid; grid-template-columns: 1fr; grid-auto-rows: auto; justify-items: center; }
   .league .logo-link { grid-column: 1; justify-self: center; }
   .league .title-row h1 { grid-column: 1; white-space: normal; text-align: center; }

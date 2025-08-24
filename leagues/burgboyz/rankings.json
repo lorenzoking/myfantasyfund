@@ -1,0 +1,15 @@
+{
+  "rankings": [
+    { "rank": 1, "team": "BurgBoyz A", "record": "7-2" },
+    { "rank": 2, "team": "BurgBoyz B", "record": "6-3" },
+    { "rank": 3, "team": "BurgBoyz C", "record": "5-4" }
+  ],
+  "payouts": [
+    { "place": "1st", "percent": 60 },
+    { "place": "2nd", "percent": 30 },
+    { "place": "3rd", "percent": 10 }
+  ]
+}
+
+
+
