@@ -88,6 +88,7 @@ body {
 .thanks .logo-img { 
   height: clamp(40px, 5vw, 80px); 
 }
+
 .title-row > * { min-width: 0; }
 .logo-link { display: inline-flex; align-items: center; }
 .title-actions { display: flex; gap: 8px; align-items: center; }
