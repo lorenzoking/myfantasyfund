@@ -34,20 +34,62 @@ body {
   gap: 8px;
 }
 .home .title-row { justify-content: center; }
-.league .title-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
-.league .title-row h1 { justify-self: center; margin: 0; text-align: center; padding: 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.league .title-row { 
+  display: grid; 
+  grid-template-columns: 1fr auto 1fr; 
+  align-items: center; 
+  gap: 24px;
+}
+.league .title-row h1 { 
+  justify-self: center; 
+  margin: 0; 
+  text-align: center; 
+  padding: 0 20px; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+  font-size: 22px;
+  line-height: 1.2;
+  min-width: 0;
+}
 .league .logo-link { justify-self: start; }
 .league .title-actions { justify-self: end; }
 /* Thanks page header centered like league */
-.thanks .title-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
-.thanks .title-row h1 { justify-self: center; text-align: center; margin: 0; }
+.thanks .title-row { 
+  display: grid; 
+  grid-template-columns: 1fr auto 1fr; 
+  align-items: center; 
+  gap: 24px;
+}
+.thanks .title-row h1 { 
+  justify-self: center; 
+  text-align: center; 
+  margin: 0; 
+  font-size: 22px;
+  line-height: 1.2;
+  min-width: 0;
+}
 .thanks .logo-link { justify-self: start; }
 .thanks .title-actions { justify-self: end; }
+/* Logo sizing - optimized to prevent overlap and maintain proportions */
+.logo-img { 
+  height: clamp(60px, 6vw, 120px); 
+  width: auto; 
+  border-radius: 0; 
+  display: block; 
+}
+
 /* Slightly smaller logo on league pages to avoid crowding */
-.league .logo-img { height: clamp(36px, 4vw, 56px); }
+.league .logo-img { 
+  height: clamp(40px, 5vw, 80px); 
+}
+
+/* Thanks page logo size */
+.thanks .logo-img { 
+  height: clamp(40px, 5vw, 80px); 
+}
 .title-row > * { min-width: 0; }
 .logo-link { display: inline-flex; align-items: center; }
-.logo-img { height: clamp(60px, 6vw, 120px); width: auto; border-radius: 0; display: block; }
 .title-actions { display: flex; gap: 8px; align-items: center; }
 .header h1 { margin: 0; font-size: 22px; letter-spacing: 0.2px; }
 .subtitle { margin: 6px 0 0; color: var(--muted); }
@@ -180,21 +222,52 @@ input[type="text"], input[type="number"] {
   /* Ensure long values like BTC addresses and timestamps don't get cut off */
   .meta-row { flex-direction: column; align-items: flex-start; }
   .meta-value { max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }
-  .logo-img { height: clamp(48px, 12vw, 100px); }
+  
+  /* Mobile logo sizing - optimized to prevent overlap */
+  .logo-img { height: clamp(60px, 10vw, 120px); }
+  
   .title-row { flex-wrap: wrap; }
   .header h1 { flex: 1 0 100%; white-space: normal; line-height: 1.2; }
   .title-actions { margin-left: auto; }
+  
   /* On mobile allow league titles to wrap and ensure smaller logo */
-  .league .logo-img { height: clamp(28px, 10vw, 40px); }
-  .league .title-row { display: grid; grid-template-columns: 1fr; grid-auto-rows: auto; justify-items: center; }
+  .league .logo-img { height: clamp(32px, 6vw, 48px); }
+  .league .title-row { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    grid-auto-rows: auto; 
+    justify-items: center; 
+    gap: 16px;
+  }
   .league .logo-link { grid-column: 1; justify-self: center; }
-  .league .title-row h1 { grid-column: 1; white-space: normal; text-align: center; }
+  .league .title-row h1 { 
+    grid-column: 1; 
+    white-space: normal; 
+    text-align: center; 
+    font-size: 18px;
+    line-height: 1.3;
+    padding: 0 12px;
+  }
   .league .title-actions { grid-column: 1; justify-self: center; margin-top: 6px; }
+  
   /* Stack thanks header on mobile */
-  .thanks .logo-img { height: clamp(28px, 10vw, 40px); }
-  .thanks .title-row { display: grid; grid-template-columns: 1fr; grid-auto-rows: auto; justify-items: center; }
+  .thanks .logo-img { height: clamp(32px, 6vw, 48px); }
+  .thanks .title-row { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    grid-auto-rows: auto; 
+    justify-items: center; 
+    gap: 16px;
+  }
   .thanks .logo-link { grid-column: 1; justify-self: center; }
-  .thanks .title-row h1 { grid-column: 1; white-space: normal; text-align: center; }
+  .thanks .title-row h1 { 
+    grid-column: 1; 
+    white-space: normal; 
+    text-align: center; 
+    font-size: 18px;
+    line-height: 1.3;
+    padding: 0 12px;
+  }
   .thanks .title-actions { grid-column: 1; justify-self: center; margin-top: 6px; }
 }
 
