@@ -186,6 +186,12 @@ input[type="text"], input[type="number"] {
 .kpi-value.accent { color: var(--accent-2); }
 .kpi-sub { color: var(--muted); margin-top: 4px; font-size: 12px; }
 
+/* KPI value row with delta */
+.kpi-value-row { display: flex; align-items: baseline; gap: 8px; }
+.delta-badge { font-size: 12px; padding: 2px 6px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+.delta-up { background: rgba(63,185,80,0.12); color: #57d06e; border-color: rgba(63,185,80,0.35); }
+.delta-down { background: rgba(255,92,92,0.12); color: #ff9a9a; border-color: rgba(255,92,92,0.35); }
+
 .controls { display: grid; gap: 8px; margin-bottom: 8px; }
 .control-label { color: var(--muted); font-size: 12px; }
 .cagr-controls { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }

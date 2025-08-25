@@ -250,16 +250,39 @@ function renderPayouts(payoutPercents, fundUsd) {
   dom.payoutsTable.innerHTML = rows || '<tr><td colspan="3" style="text-align:center; color: var(--muted)">No payouts configured.</td></tr>';
 }
 
+async function fetchSevenDayPrice() {
+  try {
+    const url = 'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7&interval=daily';
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('seven-day fetch failed');
+    const data = await res.json();
+    const prices = (data?.prices || []).map(p => p[1]);
+    if (prices.length < 2) throw new Error('insufficient data');
+    const start = prices[0];
+    const end = prices[prices.length - 1];
+    return { start, end, pct: ((end - start) / start) * 100 };
+  } catch (e) { console.warn('Seven day price fetch failed', e); return null; }
+}
+
+function formatDeltaPct(pct) {
+  if (!Number.isFinite(pct)) return { text: '—', cls: '', emoji: '' };
+  const sign = pct >= 0 ? '+' : '';
+  const cls = pct >= 0 ? 'delta-up' : 'delta-down';
+  const emoji = pct >= 0 ? '📈' : '📉';
+  return { text: `${emoji} ${sign}${pct.toFixed(1)}%`, cls, emoji };
+}
+
 async function refreshAll() {
   const address = (__leagueMode && __configAddress) ? __configAddress : loadAddress();
   updateAddressUi(address);
   if (!address) return;
   try {
     const slug = getSlugFromPath();
-    const [{ rankings, payouts }, price, balance] = await Promise.all([
+    const [{ rankings, payouts }, price, balance, seven] = await Promise.all([
       fetchRankingsAndPayouts(slug),
       fetchBtcPrice(),
-      fetchAddressBalanceBtc(address)
+      fetchAddressBalanceBtc(address),
+      fetchSevenDayPrice(),
     ]);
     const usdValue = price * balance;
     dom.btcPrice.textContent = formatters.usd.format(price);
@@ -269,12 +292,22 @@ async function refreshAll() {
     window.__lastPrice = price;
     window.__lastUsdValue = usdValue;
     window.__lastBtcValue = balance;
-    console.log('[Payouts] Fund extracted', {
-      price_usd: price,
-      balance_btc: balance,
-      usd_value: usdValue,
-      total_sats: Math.round(balance * 1e8).toLocaleString()
-    });
+
+    // Weekly deltas based on price change
+    const btcDeltaEl = document.getElementById('btcDelta');
+    const usdDeltaEl = document.getElementById('usdDelta');
+    if (seven && btcDeltaEl && usdDeltaEl) {
+      const d = formatDeltaPct(seven.pct);
+      btcDeltaEl.textContent = d.text;
+      usdDeltaEl.textContent = d.text;
+      btcDeltaEl.className = `delta-badge ${d.cls}`;
+      usdDeltaEl.className = `delta-badge ${d.cls}`;
+      btcDeltaEl.setAttribute('title', '7-day change');
+      usdDeltaEl.setAttribute('title', '7-day change');
+      btcDeltaEl.setAttribute('aria-label', '7-day change');
+      usdDeltaEl.setAttribute('aria-label', '7-day change');
+    }
+
     computeAndRenderProjections(usdValue, price);
     // Render rankings and payouts after value known
     renderRankings(rankings);
