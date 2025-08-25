@@ -84,7 +84,71 @@
           <div class="card-footer small">Data auto-refreshes every 60s. Values approximate.</div>
         </div>
 
-        <div class="card">
+        <div class="card card-analyzer">
+          <div class="card-header">
+            <h2>AI Rankings Analyzer</h2>
+          </div>
+          <div class="card-body">
+            <div class="upload-section">
+              <div class="year-selector">
+                <label for="uploadYearSelect" class="control-label">Select Year</label>
+                <select id="uploadYearSelect">
+                  <option value="2024">2024</option>
+                  <option value="2023">2023</option>
+                  <option value="2022">2022</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                </select>
+              </div>
+              <label for="standingsImageInput" class="control-label">Upload Standings Screenshot</label>
+              <input id="standingsImageInput" type="file" accept="image/*" />
+              <p class="help-text small">Upload a screenshot of your current fantasy standings. AI will analyze it to extract team rankings.</p>
+              <button id="analyzeStandingsBtn" class="btn primary">Analyze Standings</button>
+            </div>
+            <div class="horiz"></div>
+            <div class="debug-wrap">
+              <div class="debug-header">
+                <div class="mini-label">Debug JSON (copy into your league’s rankings.json)</div>
+                <button id="copyAiJsonBtn" class="btn">Copy JSON</button>
+              </div>
+              <textarea id="aiDebugJson" readonly rows="10" style="width:100%; resize:vertical;"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-payouts">
+          <div class="card-header">
+            <h2>Prize Payouts</h2>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table class="proj-table">
+                <thead>
+                  <tr><th style="text-align:left">Place</th><th>Percent</th><th style="text-align:right">Payout</th></tr>
+                </thead>
+                <tbody id="payoutsTable"></tbody>
+              </table>
+            </div>
+            <p class="help-text small">Bitcoin amounts stay constant - USD values fluctuate with price. Stack sats and the dollars will come...</p>
+          </div>
+        </div>
+        <div class="card card-power">
+          <div class="card-header">
+            <h2>2024 Power Rankings</h2>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table class="proj-table">
+                <thead>
+                  <tr><th style="text-align:left">Rank</th><th style="text-align:left">Team</th><th>Record</th></tr>
+                </thead>
+                <tbody id="rankingsTable"></tbody>
+              </table>
+            </div>
+            <p class="help-text small">Updated automatically from your league’s `rankings.json`.</p>
+          </div>
+        </div>
+        <div class="card card-growth">
           <div class="card-header">
             <h2>Growth Projection</h2>
           </div>
@@ -131,38 +195,6 @@
             </div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <h2>Power Rankings</h2>
-          </div>
-          <div class="card-body">
-            <div class="table-wrap">
-              <table class="proj-table">
-                <thead>
-                  <tr><th style="text-align:left">Rank</th><th style="text-align:left">Team</th><th>Record</th></tr>
-                </thead>
-                <tbody id="rankingsTable"></tbody>
-              </table>
-            </div>
-            <p class="help-text small">Updated automatically from your league’s `rankings.json`.</p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <h2>Prize Payouts</h2>
-          </div>
-          <div class="card-body">
-            <div class="table-wrap">
-              <table class="proj-table">
-                <thead>
-                  <tr><th style="text-align:left">Place</th><th>Percent</th><th>Payout (USD)</th></tr>
-                </thead>
-                <tbody id="payoutsTable"></tbody>
-              </table>
-            </div>
-            <p class="help-text small">Payouts scale with your fund value and your configured percentages.</p>
-          </div>
-        </div>
       </section>
 
       <footer class="footer small">
@@ -172,6 +204,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="/app.js" type="module"></script>
   </body>
   </html>

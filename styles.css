@@ -205,18 +205,44 @@ input[type="text"], input[type="number"] {
 .mini-value { font-weight: 700; }
 
 .table-wrap { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-.proj-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.proj-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
 .proj-table thead { background: #0f1216; color: var(--muted); }
-.proj-table th, .proj-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; }
+.proj-table th, .proj-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; vertical-align: top; }
 .proj-table th:first-child, .proj-table td:first-child { text-align: left; }
+
+/* Specific styling for the payouts table */
+.proj-table th:nth-child(1) { width: 25%; } /* Place */
+.proj-table th:nth-child(2) { width: 20%; } /* Percent */
+.proj-table th:nth-child(3) { width: 55%; } /* Payout (sats + USD) */
+
+/* Ensure text doesn't get cut off in cells */
+.proj-table td { word-wrap: break-word; overflow-wrap: break-word; }
 
 .footer { margin-top: 20px; text-align: center; color: var(--muted); }
 
+/* Make all grid cards full width like Fund Address */
+.grid > .card { grid-column: span 12; }
+
+/* Keep ability to tweak specific cards later if needed
+.grid > .card.card-growth { }
+.grid > .card.card-analyzer { }
+.grid > .card.card-power { }
+.grid > .card.card-payouts { }
+*/
+
+/* Hide AI analyzer by default (kept in DOM for future use) */
+.card-analyzer { display: none; }
+
+/* Mobile ordering remains the same */
 @media (max-width: 920px) {
   .grid { grid-template-columns: 1fr; }
   .grid > .card { grid-column: 1 / -1; }
-  .grid-12 { grid-template-columns: 1fr; }
-  .col-7, .col-5 { grid-column: 1 / -1; }
+  .grid > .card:nth-child(1) { order: 1; }
+  .grid > .card.card-analyzer { order: 2; }
+  .grid > .card.card-payouts { order: 3; }
+  .grid > .card.card-power { order: 4; }
+  .grid > .card.card-growth { order: 5; }
+
   .address-grid { grid-template-columns: 1fr; }
   .kpis { grid-template-columns: 1fr; }
   .horiz-cards { grid-template-columns: 1fr; }
@@ -227,29 +253,24 @@ input[type="text"], input[type="number"] {
   /* Mobile logo sizing - optimized to prevent overlap */
   .logo-img { height: clamp(60px, 10vw, 120px); }
   
-  .title-row { flex-wrap: wrap; }
-  .header h1 { flex: 1 0 100%; white-space: normal; line-height: 1.2; }
-  .title-actions { margin-left: auto; }
-  
-  /* On mobile allow league titles to wrap and ensure smaller logo */
-  .league .logo-img { height: clamp(32px, 6vw, 48px); }
+  /* Stack logo above league name on mobile to avoid overlap */
+  .league .logo-img { height: clamp(40px, 8vw, 64px); }
   .league .title-row { 
-    display: grid; 
-    grid-template-columns: 1fr; 
-    grid-auto-rows: auto; 
-    justify-items: center; 
-    gap: 16px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 8px;
   }
-  .league .logo-link { grid-column: 1; justify-self: center; }
+  .league .logo-link { align-self: center; }
   .league .title-row h1 { 
-    grid-column: 1; 
     white-space: normal; 
     text-align: center; 
     font-size: 18px;
     line-height: 1.3;
     padding: 0 12px;
+    margin: 0;
   }
-  .league .title-actions { grid-column: 1; justify-self: center; margin-top: 6px; }
+  .league .title-actions { align-self: center; margin-top: 4px; }
   
   /* Stack thanks header on mobile */
   .thanks .logo-img { height: clamp(32px, 6vw, 48px); }
@@ -270,6 +291,63 @@ input[type="text"], input[type="number"] {
     padding: 0 12px;
   }
   .thanks .title-actions { grid-column: 1; justify-self: center; margin-top: 6px; }
+  
+  /* Mobile table handling for payouts */
+  .proj-table { font-size: 12px; }
+  .proj-table th, .proj-table td { padding: 6px 8px; }
+  .proj-table th:nth-child(1) { width: 25%; }
+  .proj-table th:nth-child(2) { width: 20%; }
+  .proj-table th:nth-child(3) { width: 55%; }
 }
+
+/* Upload Section Styles */
+.upload-section {
+  display: grid;
+  gap: 16px;
+}
+
+.year-selector {
+  display: grid;
+  gap: 8px;
+}
+
+.year-selector select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0f1216;
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.year-selector select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.upload-section input[type="file"] {
+  padding: 12px;
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.upload-section input[type="file"]:hover {
+  border-color: var(--accent);
+  background: rgba(255, 138, 0, 0.05);
+}
+
+.upload-section .btn {
+  justify-self: start;
+  margin-top: 8px;
+}
+
+/* Debug JSON area */
+.debug-wrap { display: grid; gap: 8px; }
+.debug-header { display: flex; align-items: center; justify-content: space-between; }
+#aiDebugJson { background: #0f1216; color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; }
 
 

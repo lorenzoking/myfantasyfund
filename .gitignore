@@ -1,0 +1,4 @@
+# Node and local artifacts (not needed for GitHub Pages)
+node_modules/
+*.log
+.DS_Store
