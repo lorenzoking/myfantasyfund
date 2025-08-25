@@ -1,13 +1,55 @@
 {
   "rankings": [
-    { "rank": 1, "team": "BurgBoyz A", "record": "7-2" },
-    { "rank": 2, "team": "BurgBoyz B", "record": "6-3" },
-    { "rank": 3, "team": "BurgBoyz C", "record": "5-4" }
-  ],
-  "payouts": [
-    { "place": "1st", "percent": 60 },
-    { "place": "2nd", "percent": 30 },
-    { "place": "3rd", "percent": 10 }
+    {
+      "rank": 1,
+      "team": "Hat Trick Oracle",
+      "record": "10-4-0"
+    },
+    {
+      "rank": 2,
+      "team": "The Finesse King's",
+      "record": "10-4-0"
+    },
+    {
+      "rank": 3,
+      "team": "Team Himbo Fisher",
+      "record": "9-4-1"
+    },
+    {
+      "rank": 4,
+      "team": "Lord Vader",
+      "record": "9-5-0"
+    },
+    {
+      "rank": 5,
+      "team": "Javon Smith",
+      "record": "8-5-1"
+    },
+    {
+      "rank": 6,
+      "team": "Big Man Season",
+      "record": "7-7-0"
+    },
+    {
+      "rank": 7,
+      "team": "Jameis and The 5 Crab L...",
+      "record": "4-10-0"
+    },
+    {
+      "rank": 8,
+      "team": "Team Mintz",
+      "record": "6-6-2"
+    },
+    {
+      "rank": 9,
+      "team": "Team Young",
+      "record": "4-10-0"
+    },
+    {
+      "rank": 10,
+      "team": "carter not winning #snw",
+      "record": "1-13-0"
+    }
   ]
 }
 
