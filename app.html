@@ -66,6 +66,7 @@
                 <span id="btcPrice" class="kpi-value">—</span>
                 <span id="btcDelta" class="delta-badge">—</span>
               </div>
+              <div class="kpi-sub">Percentage shows 7-day change</div>
             </div>
             <div class="kpi">
               <div class="kpi-label">Fund Balance (BTC)</div>
@@ -78,10 +79,11 @@
                 <span id="usdValue" class="kpi-value accent">—</span>
                 <span id="usdDelta" class="delta-badge">—</span>
               </div>
+              <div class="kpi-sub" id="usdInvestedDisplay" style="display:none">— invested</div>
             </div>
           </div>
           <div class="card-body">
-            <p class="help-text small" style="margin-top:0">Fund Value is simply your BTC amount multiplied by the current Bitcoin price. Weekly change (7 days) is shown next to the values. This view updates about every minute.</p>
+            <p class="help-text small" style="margin-top:0">Fund Value is simply your BTC amount multiplied by the current Bitcoin price. Weekly change (7 days) is shown next to BTC price.</p>
             <div class="horiz"></div>
             <h3 class="small" style="margin: 0 0 8px; color: var(--muted);">BTC Price (Last 12 Months)</h3>
             <div class="chart-wrap"><canvas id="linePriceChart"></canvas></div>

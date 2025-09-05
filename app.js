@@ -10,6 +10,7 @@ const dom = {
   btcBalance: document.getElementById('btcBalance'),
   satsBalance: document.getElementById('satsBalance'),
   usdValue: document.getElementById('usdValue'),
+  usdInvestedDisplay: document.getElementById('usdInvestedDisplay'),
   cagrRange: document.getElementById('cagrRange'),
   cagrInput: document.getElementById('cagrInput'),
   p5: document.getElementById('p5'),
@@ -36,6 +37,7 @@ const formatters = {
 // League routing state
 let __leagueMode = false;
 let __configAddress = '';
+let __usdInvested = 0;
 
 function getBlockExplorerUrl(address) {
   return `https://mempool.space/address/${address}`;
@@ -289,25 +291,48 @@ async function refreshAll() {
     dom.btcBalance.textContent = formatters.btc.format(balance);
     if (dom.satsBalance) dom.satsBalance.textContent = `${Math.round(balance * 1e8).toLocaleString()} sats`;
     dom.usdValue.textContent = formatters.usd.format(usdValue);
+    if (dom.usdInvestedDisplay) {
+      if (__usdInvested > 0) {
+        dom.usdInvestedDisplay.textContent = `${formatters.usd.format(__usdInvested)} invested`;
+        dom.usdInvestedDisplay.style.display = '';
+      } else {
+        dom.usdInvestedDisplay.style.display = 'none';
+      }
+    }
     window.__lastPrice = price;
     window.__lastUsdValue = usdValue;
     window.__lastBtcValue = balance;
 
-    // Weekly deltas based on price change
+    // BTC weekly delta; USD shows ROI vs invested if provided
     const btcDeltaEl = document.getElementById('btcDelta');
     const usdDeltaEl = document.getElementById('usdDelta');
-    if (seven && btcDeltaEl && usdDeltaEl) {
+
+
+    if (seven && btcDeltaEl) {
       const d = formatDeltaPct(seven.pct);
       btcDeltaEl.textContent = d.text;
-      usdDeltaEl.textContent = d.text;
       btcDeltaEl.className = `delta-badge ${d.cls}`;
-      usdDeltaEl.className = `delta-badge ${d.cls}`;
       btcDeltaEl.setAttribute('title', '7-day change');
-      usdDeltaEl.setAttribute('title', '7-day change');
       btcDeltaEl.setAttribute('aria-label', '7-day change');
-      usdDeltaEl.setAttribute('aria-label', '7-day change');
     }
-
+    if (usdDeltaEl) {
+      if (__usdInvested > 0) {
+        const roiPct = ((usdValue - __usdInvested) / __usdInvested) * 100;
+        const sign = roiPct >= 0 ? '+' : '';
+        const cls = roiPct >= 0 ? 'delta-up' : 'delta-down';
+        usdDeltaEl.textContent = `${sign}${roiPct.toFixed(1)}%`;
+        usdDeltaEl.className = `delta-badge ${cls}`;
+        usdDeltaEl.setAttribute('title', 'Return vs USD invested');
+        usdDeltaEl.setAttribute('aria-label', 'Return vs USD invested');
+      } else if (seven) {
+        const d = formatDeltaPct(seven.pct);
+        usdDeltaEl.textContent = d.text;
+        usdDeltaEl.className = `delta-badge ${d.cls}`;
+        usdDeltaEl.setAttribute('title', '7-day change');
+        usdDeltaEl.setAttribute('aria-label', '7-day change');
+      }
+    }
+    
     computeAndRenderProjections(usdValue, price);
     // Render rankings and payouts after value known
     renderRankings(rankings);
@@ -351,6 +376,7 @@ async function loadConfigAddress() {
           dom.titleLeagueName.textContent = cfg.leagueName;
           try { document.title = `${cfg.leagueName} Bitcoin Fund`; } catch {}
         }
+        __usdInvested = Number(cfg?.usdInvested) || 0;
         const addr = typeof cfg?.btcAddress === 'string' ? cfg.btcAddress.trim() : '';
         if (addr) return addr;
       }
@@ -364,6 +390,7 @@ async function loadConfigAddress() {
       dom.titleLeagueName.textContent = cfg.leagueName;
       try { document.title = `${cfg.leagueName} Bitcoin Fund`; } catch {}
     }
+    __usdInvested = Number(cfg?.usdInvested) || 0;
     return addr;
   } catch (_) {
     return '';
