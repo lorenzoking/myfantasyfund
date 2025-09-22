@@ -1,0 +1,19 @@
+{
+  "meta": { "year": 2025, "week": 3 },
+  "rankings": [
+    { "rank": 1,  "team": "Best of the best!!!",              "record": "2-0-0" },
+    { "rank": 2,  "team": "Chubba Duckys",                    "record": "2-0-0" },
+    { "rank": 3,  "team": "Milkmen",                          "record": "2-0-0" },
+    { "rank": 4,  "team": "Say Ya Grace",                      "record": "1-1-0" },
+    { "rank": 5,  "team": "NO LOOK",                           "record": "1-1-0" },
+    { "rank": 6,  "team": "1st Team All Dawg",                 "record": "1-1-0" },
+    { "rank": 7,  "team": "The Rebrand",                       "record": "1-1-0" },
+    { "rank": 8,  "team": "Thank You for the Donation",        "record": "1-1-0" },
+    { "rank": 9,  "team": "Leather Belts",                     "record": "1-1-0" },
+    { "rank": 10, "team": "Standin on Business",               "record": "0-2-0" },
+    { "rank": 11, "team": "Mr. Bring Your Best",               "record": "0-2-0" },
+    { "rank": 12, "team": "I Don't Think They Get It Yet",     "record": "0-2-0" }
+  ]
+}
+
+
