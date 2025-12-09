@@ -220,17 +220,19 @@ function updateProjectionTable({ priceNow, usdNow, cagrPercent, years }) {
 
 async function fetchRankingsAndPayouts(slug) {
   try {
-    if (!slug) return { rankings: [], payouts: [] };
+    if (!slug) return { rankings: [], payouts: [], bracket: null, meta: null };
     const res = await fetch(`/leagues/${slug}/rankings.json`, { cache: 'no-store' });
-    if (!res.ok) return { rankings: [], payouts: [] };
+    if (!res.ok) return { rankings: [], payouts: [], bracket: null, meta: null };
     const j = await res.json();
     const rankings = Array.isArray(j?.rankings) ? j.rankings : [];
     const payouts = Array.isArray(j?.payouts) ? j.payouts : [];
-    return { rankings, payouts };
-  } catch (_) { return { rankings: [], payouts: [] }; }
+    const bracket = j?.bracket || null;
+    const meta = j?.meta || null;
+    return { rankings, payouts, bracket, meta };
+  } catch (_) { return { rankings: [], payouts: [], bracket: null, meta: null }; }
 }
 
-function renderRankings(rankings) {
+function renderRankings(rankings, meta) {
   if (!dom.rankingsTable) return;
   const rows = rankings.map((r, i) => {
     const place = (r?.rank ?? i + 1);
@@ -239,6 +241,76 @@ function renderRankings(rankings) {
     return `<tr><td style="text-align:left">#${place}</td><td style="text-align:left">${team}</td><td>${record}</td></tr>`;
   }).join('');
   dom.rankingsTable.innerHTML = rows || '<tr><td colspan="3" style="text-align:center; color: var(--muted)">No rankings yet.</td></tr>';
+  
+  // Update rankings card title with year if available
+  const rankingsHeader = dom.rankingsTable?.closest('.card')?.querySelector('.card-header h2');
+  if (rankingsHeader && meta?.year) {
+    const suffix = meta?.playoffs ? ' Final Standings' : ' Power Rankings';
+    rankingsHeader.textContent = `${meta.year}${suffix}`;
+  }
+}
+
+function renderBracket(bracket) {
+  const bracketCard = document.getElementById('bracketCard');
+  const bracketContainer = document.getElementById('playoffBracket');
+  
+  if (!bracketCard || !bracketContainer) return;
+  
+  // Hide bracket card if no bracket data
+  if (!bracket || !bracket.rounds || bracket.rounds.length === 0) {
+    bracketCard.style.display = 'none';
+    return;
+  }
+  
+  // Show bracket card
+  bracketCard.style.display = '';
+  
+  // Build bracket HTML
+  const roundsHtml = bracket.rounds.map((round, roundIdx) => {
+    const matchupsHtml = round.matchups.map((m, mIdx) => {
+      const team1IsBye = m.team2 === 'BYE';
+      const team2IsBye = m.team1 === 'BYE';
+      const team1Winner = m.winner === m.team1 || m.winner === 1;
+      const team2Winner = m.winner === m.team2 || m.winner === 2;
+      
+      const renderTeam = (seed, name, score, isBye, isWinner, isTbd) => {
+        const byeClass = isBye ? 'bye' : '';
+        const winnerClass = isWinner ? 'winner' : '';
+        const seedDisplay = seed ? `#${seed}` : '';
+        const scoreDisplay = isTbd ? '—' : (score !== null && score !== undefined ? score : '—');
+        const scoreTbdClass = (score === null || score === undefined || isTbd) ? 'tbd' : '';
+        
+        return `
+          <div class="bracket-team ${byeClass} ${winnerClass}">
+            <span class="bracket-seed">${seedDisplay}</span>
+            <span class="bracket-team-name">${name || 'TBD'}</span>
+            <span class="bracket-score ${scoreTbdClass}">${isBye ? '' : scoreDisplay}</span>
+          </div>
+        `;
+      };
+      
+      const isTbd = m.team1 === 'TBD' && m.team2 === 'TBD';
+      
+      return `
+        <div class="bracket-matchup">
+          ${renderTeam(m.seed1, m.team1, m.score1, team2IsBye, team1Winner, m.team1 === 'TBD')}
+          ${renderTeam(m.seed2, m.team2, m.score2, team1IsBye, team2Winner, m.team2 === 'TBD' || m.team2 === 'BYE')}
+        </div>
+      `;
+    }).join('');
+    
+    return `
+      <div class="bracket-round">
+        <div class="bracket-round-header">${round.name}</div>
+        <div class="bracket-round-week">${round.week || ''}</div>
+        <div class="bracket-matchups">
+          ${matchupsHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  bracketContainer.innerHTML = roundsHtml;
 }
 
 function renderPayouts(payoutPercents, fundUsd) {
@@ -280,7 +352,7 @@ async function refreshAll() {
   if (!address) return;
   try {
     const slug = getSlugFromPath();
-    const [{ rankings, payouts }, price, balance, seven] = await Promise.all([
+    const [{ rankings, payouts, bracket, meta }, price, balance, seven] = await Promise.all([
       fetchRankingsAndPayouts(slug),
       fetchBtcPrice(),
       fetchAddressBalanceBtc(address),
@@ -334,8 +406,9 @@ async function refreshAll() {
     }
     
     computeAndRenderProjections(usdValue, price);
-    // Render rankings and payouts after value known
-    renderRankings(rankings);
+    // Render rankings, bracket, and payouts after value known
+    renderRankings(rankings, meta);
+    renderBracket(bracket);
     updatePrizePayouts(rankings, payouts);
     // Update rolling 365-day price line with the latest price
     if (window.__priceLine && window.__priceLine.data && window.__priceLine.data.datasets?.[0]) {

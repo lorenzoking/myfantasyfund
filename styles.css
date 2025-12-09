@@ -356,4 +356,136 @@ input[type="text"], input[type="number"] {
 .debug-header { display: flex; align-items: center; justify-content: space-between; }
 #aiDebugJson { background: #0f1216; color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; }
 
+/* Playoff Bracket Styles */
+.bracket-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  min-height: 320px;
+}
+
+.bracket-round {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bracket-round-header {
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--accent);
+  padding: 8px 0;
+  border-bottom: 2px solid var(--accent);
+  margin-bottom: 4px;
+}
+
+.bracket-round-week {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.bracket-matchups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  justify-content: space-around;
+}
+
+.bracket-matchup {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bracket-team {
+  display: grid;
+  grid-template-columns: 28px 1fr 40px;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.bracket-team:last-child {
+  border-bottom: none;
+}
+
+.bracket-team.winner {
+  background: rgba(63,185,80,0.12);
+}
+
+.bracket-team.bye {
+  background: rgba(255,255,255,0.01);
+  color: var(--muted);
+  font-style: italic;
+}
+
+.bracket-seed {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+}
+
+.bracket-team-name {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bracket-score {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: right;
+}
+
+.bracket-score.tbd {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* Championship round centered */
+.bracket-round:last-child .bracket-matchups {
+  justify-content: center;
+}
+
+/* Mobile bracket scrolling */
+@media (max-width: 920px) {
+  .bracket-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding-bottom: 16px;
+    min-height: auto;
+  }
+  
+  .bracket-round {
+    min-width: 180px;
+    flex-shrink: 0;
+  }
+  
+  .bracket-team {
+    grid-template-columns: 24px 1fr 32px;
+    padding: 8px 10px;
+  }
+  
+  .bracket-team-name {
+    font-size: 11px;
+  }
+  
+  .bracket-seed,
+  .bracket-score {
+    font-size: 11px;
+  }
+}
+
 

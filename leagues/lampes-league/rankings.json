@@ -1,19 +1,46 @@
 {
-  "meta": { "year": 2025, "week": 3 },
+  "meta": { "year": 2025, "week": 15, "playoffs": true },
   "rankings": [
-    { "rank": 1,  "team": "Best of the best!!!",              "record": "2-0-0" },
-    { "rank": 2,  "team": "Chubba Duckys",                    "record": "2-0-0" },
-    { "rank": 3,  "team": "Milkmen",                          "record": "2-0-0" },
-    { "rank": 4,  "team": "Say Ya Grace",                      "record": "1-1-0" },
-    { "rank": 5,  "team": "NO LOOK",                           "record": "1-1-0" },
-    { "rank": 6,  "team": "1st Team All Dawg",                 "record": "1-1-0" },
-    { "rank": 7,  "team": "The Rebrand",                       "record": "1-1-0" },
-    { "rank": 8,  "team": "Thank You for the Donation",        "record": "1-1-0" },
-    { "rank": 9,  "team": "Leather Belts",                     "record": "1-1-0" },
-    { "rank": 10, "team": "Standin on Business",               "record": "0-2-0" },
-    { "rank": 11, "team": "Mr. Bring Your Best",               "record": "0-2-0" },
-    { "rank": 12, "team": "I Don't Think They Get It Yet",     "record": "0-2-0" }
-  ]
+    { "rank": 1,  "team": "Chubba Duckys",               "record": "9-5-0" },
+    { "rank": 2,  "team": "NO LOOK",                     "record": "8-6-0" },
+    { "rank": 3,  "team": "Leather Belts",               "record": "9-5-0" },
+    { "rank": 4,  "team": "1st Team All Dawg",           "record": "9-5-0" },
+    { "rank": 5,  "team": "Thank You for the Donation",  "record": "8-6-0" },
+    { "rank": 6,  "team": "Milkmen",                     "record": "8-6-0" },
+    { "rank": 7,  "team": "Best of the best!!!",         "record": "8-6-0" },
+    { "rank": 8,  "team": "Standin on Business",         "record": "8-6-0" },
+    { "rank": 9,  "team": "Say Ya Grace",                "record": "6-8-0" },
+    { "rank": 10, "team": "I Cant Believe Its Over",     "record": "4-10-0" },
+    { "rank": 11, "team": "Maybe Next Year",             "record": "4-10-0" },
+    { "rank": 12, "team": "Pain",                        "record": "3-11-0" }
+  ],
+  "bracket": {
+    "rounds": [
+      {
+        "name": "Round 1",
+        "week": "NFL Week 15",
+        "matchups": [
+          { "seed1": 1, "team1": "Chubba Duckys", "score1": null, "seed2": null, "team2": "BYE", "score2": null, "winner": null },
+          { "seed1": 5, "team1": "Thank You for the Donation", "score1": 0, "seed2": 4, "team2": "1st Team All Dawg", "score2": 0, "winner": null },
+          { "seed1": 6, "team1": "Milkmen", "score1": 0, "seed2": 3, "team2": "Leather Belts", "score2": 0, "winner": null },
+          { "seed1": 2, "team1": "NO LOOK", "score1": null, "seed2": null, "team2": "BYE", "score2": null, "winner": null }
+        ]
+      },
+      {
+        "name": "Round 2",
+        "week": "NFL Week 16",
+        "matchups": [
+          { "seed1": null, "team1": "TBD", "score1": null, "seed2": null, "team2": "TBD", "score2": null, "winner": null },
+          { "seed1": null, "team1": "TBD", "score1": null, "seed2": null, "team2": "TBD", "score2": null, "winner": null }
+        ]
+      },
+      {
+        "name": "Championship",
+        "week": "NFL Week 17",
+        "matchups": [
+          { "seed1": null, "team1": "TBD", "score1": null, "seed2": null, "team2": "TBD", "score2": null, "winner": null }
+        ]
+      }
+    ]
+  }
 }
-
-
