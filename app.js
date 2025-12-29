@@ -238,14 +238,16 @@ function renderRankings(rankings, meta) {
     const place = (r?.rank ?? i + 1);
     const team = r?.team || r?.name || `Team ${i + 1}`;
     const record = r?.record || '';
-    return `<tr><td style="text-align:left">#${place}</td><td style="text-align:left">${team}</td><td>${record}</td></tr>`;
+    const note = r?.note || '';
+    const noteHtml = note ? `<span style="margin-left:6px;font-size:11px;color:var(--accent)">${note}</span>` : '';
+    return `<tr><td style="text-align:left">#${place}</td><td style="text-align:left">${team}${noteHtml}</td><td>${record}</td></tr>`;
   }).join('');
   dom.rankingsTable.innerHTML = rows || '<tr><td colspan="3" style="text-align:center; color: var(--muted)">No rankings yet.</td></tr>';
   
   // Update rankings card title with year if available
   const rankingsHeader = dom.rankingsTable?.closest('.card')?.querySelector('.card-header h2');
   if (rankingsHeader && meta?.year) {
-    const suffix = meta?.playoffs ? ' Final Standings' : ' Power Rankings';
+    const suffix = meta?.champion ? ' Final Standings' : (meta?.playoffs ? ' Playoff Standings' : ' Power Rankings');
     rankingsHeader.textContent = `${meta.year}${suffix}`;
   }
 }
@@ -267,23 +269,25 @@ function renderBracket(bracket) {
   
   // Build bracket HTML
   const roundsHtml = bracket.rounds.map((round, roundIdx) => {
+    const isChampionship = round.name.toLowerCase().includes('champ');
     const matchupsHtml = round.matchups.map((m, mIdx) => {
       const team1IsBye = m.team2 === 'BYE';
       const team2IsBye = m.team1 === 'BYE';
       const team1Winner = m.winner === m.team1 || m.winner === 1;
       const team2Winner = m.winner === m.team2 || m.winner === 2;
       
-      const renderTeam = (seed, name, score, isBye, isWinner, isTbd) => {
+      const renderTeam = (seed, name, score, isBye, isWinner, isTbd, isChampWinner) => {
         const byeClass = isBye ? 'bye' : '';
         const winnerClass = isWinner ? 'winner' : '';
         const seedDisplay = seed ? `#${seed}` : '';
         const scoreDisplay = isTbd ? '—' : (score !== null && score !== undefined ? score : '—');
         const scoreTbdClass = (score === null || score === undefined || isTbd) ? 'tbd' : '';
+        const champBadge = isChampWinner ? ' 🏆' : (isWinner && !isBye ? ' ✓' : '');
         
         return `
           <div class="bracket-team ${byeClass} ${winnerClass}">
             <span class="bracket-seed">${seedDisplay}</span>
-            <span class="bracket-team-name">${name || 'TBD'}</span>
+            <span class="bracket-team-name">${name || 'TBD'}${champBadge}</span>
             <span class="bracket-score ${scoreTbdClass}">${isBye ? '' : scoreDisplay}</span>
           </div>
         `;
@@ -293,8 +297,8 @@ function renderBracket(bracket) {
       
       return `
         <div class="bracket-matchup">
-          ${renderTeam(m.seed1, m.team1, m.score1, team2IsBye, team1Winner, m.team1 === 'TBD')}
-          ${renderTeam(m.seed2, m.team2, m.score2, team1IsBye, team2Winner, m.team2 === 'TBD' || m.team2 === 'BYE')}
+          ${renderTeam(m.seed1, m.team1, m.score1, team2IsBye, team1Winner, m.team1 === 'TBD', isChampionship && team1Winner)}
+          ${renderTeam(m.seed2, m.team2, m.score2, team1IsBye, team2Winner, m.team2 === 'TBD' || m.team2 === 'BYE', isChampionship && team2Winner)}
         </div>
       `;
     }).join('');

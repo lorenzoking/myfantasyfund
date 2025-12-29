@@ -1,16 +1,16 @@
 {
-  "meta": { "year": 2025, "week": 15, "playoffs": true },
+  "meta": { "year": 2025, "week": 17, "playoffs": true, "champion": "ELI" },
   "rankings": [
-    { "rank": 1,  "team": "Team Mintz",                "record": "12-2-0" },
-    { "rank": 2,  "team": "Big Man Season",           "record": "10-4-0" },
-    { "rank": 3,  "team": "Bl!ck Emmm",               "record": "8-5-1" },
-    { "rank": 4,  "team": "Ouuuweeeee",               "record": "7-6-1" },
-    { "rank": 5,  "team": "ELI",                      "record": "6-7-1" },
-    { "rank": 6,  "team": "Team Young",               "record": "6-7-1" },
+    { "rank": 1,  "team": "ELI",                      "record": "6-7-1", "note": "🏆 Champion" },
+    { "rank": 2,  "team": "Team Young",               "record": "6-7-1", "note": "Runner-up" },
+    { "rank": 3,  "team": "Team Mintz",               "record": "12-2-0", "note": "Semi-finalist" },
+    { "rank": 4,  "team": "Big Man Season",           "record": "10-4-0", "note": "Semi-finalist" },
+    { "rank": 5,  "team": "Bl!ck Emmm",               "record": "8-5-1" },
+    { "rank": 6,  "team": "Ouuuweeeee",               "record": "7-6-1" },
     { "rank": 7,  "team": "Injured Reserve",          "record": "6-8-0" },
     { "rank": 8,  "team": "Javon Smith",              "record": "5-9-0" },
-    { "rank": 9,  "team": "Team Himbo Fisher",        "record": "4-10-0" },
-    { "rank": 10, "team": "Jameis and The 5 Crab Legs", "record": "4-10-0" }
+    { "rank": 9,  "team": "Team Himbo Fisher",        "record": "3-11-0" },
+    { "rank": 10, "team": "Jameis and The 5 Crab Legs", "record": "3-11-0" }
   ],
   "bracket": {
     "rounds": [
@@ -18,25 +18,25 @@
         "name": "Round 1",
         "week": "NFL Week 15",
         "matchups": [
-          { "seed1": 1, "team1": "Team Mintz", "score1": null, "seed2": null, "team2": "BYE", "score2": null, "winner": null },
-          { "seed1": 5, "team1": "ELI", "score1": 0, "seed2": 4, "team2": "Ouuuweeeee", "score2": 0, "winner": null },
-          { "seed1": 6, "team1": "Team Young", "score1": 0, "seed2": 3, "team2": "Bl!ck Emmm", "score2": 0, "winner": null },
-          { "seed1": 2, "team1": "Big Man Season", "score1": null, "seed2": null, "team2": "BYE", "score2": null, "winner": null }
+          { "seed1": 1, "team1": "Team Mintz", "score1": null, "seed2": null, "team2": "BYE", "score2": null, "winner": "Team Mintz" },
+          { "seed1": 5, "team1": "ELI", "score1": 99, "seed2": 4, "team2": "Ouuuweeeee", "score2": 92, "winner": "ELI" },
+          { "seed1": 6, "team1": "Team Young", "score1": 120, "seed2": 3, "team2": "Bl!ck Emmm", "score2": 111, "winner": "Team Young" },
+          { "seed1": 2, "team1": "Big Man Season", "score1": null, "seed2": null, "team2": "BYE", "score2": null, "winner": "Big Man Season" }
         ]
       },
       {
         "name": "Round 2",
         "week": "NFL Week 16",
         "matchups": [
-          { "seed1": null, "team1": "TBD", "score1": null, "seed2": null, "team2": "TBD", "score2": null, "winner": null },
-          { "seed1": null, "team1": "TBD", "score1": null, "seed2": null, "team2": "TBD", "score2": null, "winner": null }
+          { "seed1": 5, "team1": "ELI", "score1": 129, "seed2": 1, "team2": "Team Mintz", "score2": 95, "winner": "ELI" },
+          { "seed1": 6, "team1": "Team Young", "score1": 104, "seed2": 2, "team2": "Big Man Season", "score2": 47, "winner": "Team Young" }
         ]
       },
       {
         "name": "Championship",
         "week": "NFL Week 17",
         "matchups": [
-          { "seed1": null, "team1": "TBD", "score1": null, "seed2": null, "team2": "TBD", "score2": null, "winner": null }
+          { "seed1": 6, "team1": "Team Young", "score1": 68, "seed2": 5, "team2": "ELI", "score2": 99, "winner": "ELI" }
         ]
       }
     ]
